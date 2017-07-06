@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "97fb0b4c78a76669f782ed56ff93c1ca",
+    "content-hash": "3dee3ef3673ae70afc7cccd445a6a925",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -313,6 +313,50 @@
                 "html"
             ],
             "time": "2017-06-03T02:28:16+00:00"
+        },
+        {
+            "name": "marcelodeandrade/yii2-bootstrap-material-design",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/marcelodeandrade/yii2-bootstrap-material-design.git",
+                "reference": "14b999e6814a54b6ca84b1aab2735017acbbf070"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/marcelodeandrade/yii2-bootstrap-material-design/zipball/14b999e6814a54b6ca84b1aab2735017acbbf070",
+                "reference": "14b999e6814a54b6ca84b1aab2735017acbbf070",
+                "shasum": ""
+            },
+            "require": {
+                "npm-asset/bootstrap-material-design": "0.5.10",
+                "yiisoft/yii2": "*",
+                "yiisoft/yii2-bootstrap": "*"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "marcelodeandrade\\material\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marcelo de Andrade",
+                    "email": "andrade.asmarcelo@gmail.com"
+                }
+            ],
+            "description": "Composer package for implementing FezVrasta's bootstrap material design in Yii2.",
+            "keywords": [
+                "bootstrap",
+                "material",
+                "yii",
+                "yii2"
+            ],
+            "time": "2017-07-06 04:25:53"
         },
         {
             "name": "npm-asset/bootstrap",
@@ -3529,7 +3573,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "marcelodeandrade/yii2-bootstrap-material-design": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

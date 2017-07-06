@@ -18,7 +18,8 @@
         "yiisoft/yii2": "~2.0.5",
         "yiisoft/yii2-bootstrap": "~2.0.0",
         "yiisoft/yii2-swiftmailer": "~2.0.0",
-        "npm-asset/bootstrap-material-design": "<4.0"
+        "npm-asset/bootstrap-material-design": "<4.0",
+        "marcelodeandrade/yii2-bootstrap-material-design": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
