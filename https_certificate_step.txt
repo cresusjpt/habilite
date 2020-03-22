@@ -1,0 +1,120 @@
+﻿Etapes pour sécuriser le site web depassement/confirmation:
+
+-	Génération du certificat SSL
+
+Créer un dossier ou stocker les fichiers sur le serveur ( exemple: /apache/conf/ssl/)
+définir les variables suivantes qui seront utilisées dans la suite :
+. _chemin_dossier = chemin du dossier défini précedemment "E:\xampp\apache\conf\ssl\habilite.tg"
+. _name = nom du projet "habilite"
+. _dmp = domaine du projet (exemple bat.tg) "habilite.tg"
+. _file.pem = fichier pem : chemin_dossier/_dmp.pem  "E:\xampp\apache\conf\ssl\habilite.tg\habilite.tg.pem"
+. _file.crt = fichier crt : chemin_dossier/_dmp.crt  "E:\xampp\apache\conf\ssl\habilite.tg\habilite.tg.crt"
+. _file.key = fichier key : chemin_dossier/_dmp.key  "E:\xampp\apache\conf\ssl\habilite.tg\habilite.tg.key"
+
+. _tmp_key = _chemin_dossier/tmp_dmp.key "E:\xampp\apache\conf\ssl\habilite.tg\tmp_dmp.key"
+. _cn = _dmp                             "habilite.tg"
+. _csr_cnf = _chemin_dossier/_dmp.csr.cnf   "E:\xampp\apache\conf\ssl\habilite.tg\habilite.tg.csr.cnf"
+. _csr = _chemin_dossier/_dmp.csr           "E:\xampp\apache\conf\ssl\habilite.tg\habilite.tg.csr"
+. _sr1 = _chemin_dossier/_dmp.sr1           "E:\xampp\apache\conf\ssl\habilite.tg\habilite.tg.sr1"
+. _v3_ext = _chemin_dossier/_dmp.v3.ext     "E:\xampp\apache\conf\ssl\habilite.tg\habilite.tg.v3.ext"
+
+creer le fichier _csr_cnf
+
+Copier coller le contenu ci-après dans le fichier _csr_cnf
+[req]
+default_bits = 2048
+prompt = no
+default_md = no
+distinguished_name = dn
+
+[dn]
+O=_name
+CN=_dmp
+
+
+creer le fichier _v3_ext
+
+Copier coller le contenu ci-après dans le fichier _v3_ext
+authorityKeyIdentifier=keyid,issuer
+basicConstraints=CA:FALSE
+keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = _dmp
+DNS.2 = *._dmp
+
+Executer ensuite l'une après l'autre les commandes suivantes :
+
+NB : Téléchargez openssl ou utiliser la console de xampp qui integre déjà openssl
+
+cd _chemin_dossier
+
+openssl genrsa -out _tmp_key 2048
+
+openssl req -x509 -new -nodes -key _tmp_key -sha256 -days 3650 -out _file.pem -subj "/O=_name}/CN=_cn"
+
+openssl req -new -sha256 -nodes -out _csr -newkey rsa:2048 -keyout _file.key -config _csr_cnf
+
+openssl x509 -req -in _csr -CA _file.pem -CAcreateserial -CAserial _sr1 -CAkey _tmp_key -out _file.crt -days 3650 -sha256 -extfile _v3_ext
+
+-	Configurer un hôte virtuel
+//On suppose que le chemin du dossier d'installation de xampp est: C:\xampp
+Aller dans le dossier C:\xampp\apache\conf\extra\
+Ajouter le contenu suivant au fichier httpd-vhost.conf : (à modifier suivant les paramètres réel du serveur)
+
+
+<VirtualHost *:443>
+    ServerAdmin tossoujeanpaul641@gmail.com
+    DocumentRoot "C:/Users/Simone Sika/Desktop/Saltech digital/batg/web"
+    ServerName bat.tg (_dmp)
+	<Directory "C:/Users/Simone Sika/Desktop/Saltech digital/batg/web">
+	Options All
+	AllowOverride All
+	Require all granted
+	</Directory>
+	ErrorLog "logs/bat.tg-error.log"
+	CustomLog "logs/bat.tg-access.log" common
+	
+	SSLEngine on
+	SSLCertificateFile "conf/ssl/bat.tg/_file.crt"
+	SSLCertificateKeyFile "conf/ssl/bat.tg/_file.key"
+</VirtualHost>
+ 
+<VirtualHost *:80>
+ServerAdmin webmaster@localhost
+DocumentRoot "C:/xampp/htdocs/"
+ServerName _dmp
+Redirect / https://domaine_project
+
+ErrorLog "logs/localhost-error.log"
+CustomLog "logs/localhost-access.log" common
+</VirtualHost>
+
+-	Ajouter le serverName au fichier de résolution local
+Ouvrir le fichier C:\windows\system32\drivers\etc\hosts en tant qu'administrateur et y rajouter :
+127.0.0.1	_dmp
+rajouter une autre ligne avec l'adresse ip du serveur (ex: 192.168.0.1	_dmp)
+
+
+-Faire installer le fichier .pem par les utilisateurs
+
+Procédure pour l'installation pour les utilisateurs
+
+*firefox
+-Rendez-vous sur la page dédiée à la configuration des certificats SSL : tapez about:preferences#privacy dans la barre d'adresses
+-Descendre et cliquer sur le bouttons afficher les certificats...
+-Appuyer sur le boutton importer... et selectionner le fichier _file.pem
+-Une fenêtre de dialogue apparaît, cochez toutes les cases avant de confirmer
+
+*Google Chrome
+-Rendez-vous sur la page dédiée à la configuration des certificats SSL: chrome://settings/privacy
+-Dérouler paramètres avancés s'il ne l'est pas par défaut
+-Descendre et cliquer sur gérer les certificats
+-Dans l'onglet autorités de certifications racines de confiance ou dans celui des éditeurs approuvés, importer le fichier _file.pem
+-Une fenêtre de dialogue apparaît, cochez toutes les cases avant de confirmer
+
+
+*Redémarrez complétement le(s) navigateur(s)
+*Allez à l'adresse https://_dmp
+*Vous pouvez maintenant accéder de manière sécurisée et sans avertissement de la part des navigateurs.

@@ -19,8 +19,15 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'css/site.css',
+        ['template_assets/batgfavicon.png', 'rel' => 'shortcut icon'],
     ];
     public $js = [
+        'js/popper.min.js',
+        //['https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js', 'integrity'=>'sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl', 'crossorigin'=>'anonymous'],
+        'js/bootstrap.min.js',
+        'template_assets/plugins/jquery-ui/jquery-ui-1.10.2.custom.min.js',
+        'template_assets/plugins/blockUI/jquery.blockUI.js',
+        'template_assets/plugins/bootbox/bootbox.min.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

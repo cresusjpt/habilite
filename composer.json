@@ -19,7 +19,21 @@
         "yiisoft/yii2-bootstrap": "~2.0.0",
         "yiisoft/yii2-swiftmailer": "~2.0.0",
         "npm-asset/bootstrap-material-design": "<4.0",
-        "marcelodeandrade/yii2-bootstrap-material-design": "dev-master"
+        "marcelodeandrade/yii2-bootstrap-material-design": "dev-master",
+        "kartik-v/yii2-grid": "@dev",
+        "kartik-v/yii2-widget-select2": "@dev",
+        "kartik-v/yii2-widget-activeform": "@dev",
+        "wadeshuler/yii2-ckeditor-cdn": "~1.0",
+        "jberall/yii2-signature-draw": "dev-master",
+        "tecnickcom/tcpdf": "^6.2",
+        "mpdf/mpdf": "^8.0",
+        "kidzen/yii2-dynamicform": "*",
+        "brinley/jsignature": "^2.1",
+        "kartik-v/yii2-tabs-x": "@dev",
+        "yiisoft/yii2-bootstrap4": "^2.0",
+        "jino5577/yii2-date-range-picker": "*",
+        "kartik-v/yii2-export": "@dev",
+        "phpoffice/phpspreadsheet": "1.8.2"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
