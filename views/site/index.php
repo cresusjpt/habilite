@@ -2,52 +2,105 @@
 
 /* @var $this yii\web\View */
 
-$this->title = 'My Yii Application';
+use yii\helpers\Html;
+use kartik\grid\GridView;
+use yii\widgets\Pjax;
+use kartik\export\ExportMenu;
+
+/* @var $this yii\web\View */
+/* @var $searchModel app\models\DemandeSearch */
+/* @var $dataProvider yii\data\ActiveDataProvider */
+
+$this->title = Yii::t('app', 'Mes Demandes');
+//$this->params['breadcrumbs'][] = $this->title;
+$gridColumns = [
+    ['class' => 'yii\grid\SerialColumn'],
+
+    [
+        'attribute' => 'eNTIFIANT.NOM',
+        'label' => 'Demandeur',
+    ],
+    'hABILITE.NOM_HABILITE',
+    'ETAT_DEMANDE',
+    [
+        'attribute' => 'DATE_DEMANDE',
+        'format' => 'raw',
+        'value' => function ($model) {
+            if (extension_loaded('intl')) {
+                return Yii::t('app', Yii::$app->formatter->asDate($model->DATE_DEMANDE), $model->DATE_DEMANDE);
+            } else {
+                return $model->DATE_DEMANDE;
+            }
+        },
+        'headerOptions' => [
+            'class' => 'col-md-2',
+        ],
+        'filter' => \jino5577\daterangepicker\DateRangePicker::widget([
+            /*'template' => '<div class="input-group"><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>{input}</div>',*/
+            'model' => $searchModel,
+            'locale' => 'fr',
+            'options' => [
+                'format' => 'YYYY-MM-dd',
+            ],
+            'attribute' => 'date_demande_range',
+            'pluginOptions' => [
+                'format' => 'YYYY-MM-dd',
+                'autoUpdateInput' => false
+            ]
+        ]),
+    ],
+    'DATE_TRAITEMENT:datetime',
+    [
+        'class' => 'yii\grid\ActionColumn',
+        'template' => '{view}{update}',
+        'buttons' => [
+            'view' => function ($url, $model, $key) {
+                $url = \yii\helpers\Url::toRoute(['demande/view', 'IDENTIFIANT' => $model->IDENTIFIANT, 'ID_HABILITE' => $model->ID_HABILITE, 'ID_DEMANDE' => $model->ID_DEMANDE]);
+                return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, [
+                    'title' => Yii::t('app', 'Consulter'),
+                ]);
+            },
+            'update' => function ($url, $model, $key) {
+                $url = \yii\helpers\Url::toRoute(['demande/update', 'IDENTIFIANT' => $model->IDENTIFIANT, 'ID_HABILITE' => $model->ID_HABILITE, 'ID_DEMANDE' => $model->ID_DEMANDE]);
+                return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
+                    'title' => Yii::t('app', 'Modifier'),
+                ]);
+            },
+        ],
+    ],
+];
 ?>
-<div class="site-index">
+<div class="jumbotron jumbotron-royal panel-body demande-index">
 
-    <div class="jumbotron">
-        <h1>Congratulations!</h1>
+    <h1><?= Html::encode($this->title) ?></h1>
+    <?php Pjax::begin(); ?>
+    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-        <p class="lead">You have successfully created your Yii-powered application.</p>
+    <p>
+        <?= Html::a(Yii::t('app', 'Faire une Demande'), ['demande/my-create'], ['class' => 'btn btn-success']) ?>
+    </p>
 
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
-    </div>
+    <?php try {
+        echo ExportMenu::widget([
+            'dataProvider' => $dataProvider,
+            'columns' => $gridColumns,
+            'filename' => "extraction_mes_demandes",
+        ]);
+    } catch (Exception $e) {
+    }
+    ?>
 
-    <div class="body-content">
-
-        <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
-            </div>
-        </div>
-
-    </div>
+    <?= GridView::widget([
+        'tableOptions' => [
+            'class' => 'table table-striped',
+        ],
+        'options' => [
+            'class' => 'table-responsive',
+        ],
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        'columns' => $gridColumns,
+    ]); ?>
+    <?php Pjax::end(); ?>
 </div>
+
