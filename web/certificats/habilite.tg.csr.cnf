@@ -1,0 +1,9 @@
+[req]
+default_bits = 2048
+prompt = no
+default_md = no
+distinguished_name = dn
+
+[dn]
+O=habilite
+CN=habilite.tg
